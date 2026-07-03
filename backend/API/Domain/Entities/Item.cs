@@ -5,5 +5,6 @@ namespace API.Domain.Entities
         public int ItemId { get; set; }
         public required string ItemCode { get; set; }
         public required string Description { get; set; }
+        public decimal Price { get; set; }
     }
 }

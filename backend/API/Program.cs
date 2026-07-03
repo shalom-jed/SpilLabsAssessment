@@ -1,9 +1,9 @@
 using API.Application.Interfaces;
+using API.Application.Mappings;
+using API.Application.Services;
 using API.Infrastructure.Data;
 using API.Infrastructure.Repositories;
-using API.Application.Mappings;
 using Microsoft.EntityFrameworkCore;
-using AutoMapper;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,34 +12,41 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// 2. Configure CORS so your React (Vite) frontend can make requests to this API
+// 2. Configure CORS so the React (Vite) frontend can make requests to this API
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowReactApp",
         policy =>
         {
-            // Update this port if your Vite frontend runs on a different one
-            policy.WithOrigins("http://localhost:5173") 
-                  .AllowAnyHeader()
-                  .AllowAnyMethod();
+            policy.WithOrigins(
+                    "http://localhost:5173",
+                    "http://localhost:5174"
+                )
+                .AllowAnyHeader()
+                .AllowAnyMethod();
         });
 });
 
-// 3. Register SpilDbContext with SQL Server using the connection string
+// 3. Register SpilDbContext with SQL Server
 builder.Services.AddDbContext<SpilDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// 4. Register Dependency Injection for Repositories (Clean Architecture)
+// 4. Register Data Access Layer – Repositories
 builder.Services.AddScoped<IClientRepository, ClientRepository>();
 builder.Services.AddScoped<IItemRepository, ItemRepository>();
 builder.Services.AddScoped<ISalesOrderRepository, SalesOrderRepository>();
 
-// 5. Register AutoMapper securely using the explicit configuration action
+// 5. Register Business Logic Layer – Services
+builder.Services.AddScoped<IClientService, ClientService>();
+builder.Services.AddScoped<IItemService, ItemService>();
+builder.Services.AddScoped<ISalesOrderService, SalesOrderService>();
+
+// 6. Register AutoMapper with the MappingProfile
 builder.Services.AddAutoMapper(cfg => cfg.AddProfile<MappingProfile>());
 
 var app = builder.Build();
 
-// 6. Configure the HTTP request pipeline.
+// 7. Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -48,7 +55,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// 7. Enable the CORS policy configured above (Must be placed before Authorization)
+// 8. Enable CORS (must be before Authorization)
 app.UseCors("AllowReactApp");
 
 app.UseAuthorization();

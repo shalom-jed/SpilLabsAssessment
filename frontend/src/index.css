@@ -2,7 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Adding a subtle background color for the whole app to match the wireframe aesthetic */
+/* Ensure the app fills the full viewport */
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 body {
-  @apply bg-gray-50 text-gray-800;
+  @apply bg-gray-100 text-gray-800;
 }

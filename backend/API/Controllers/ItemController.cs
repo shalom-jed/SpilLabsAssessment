@@ -9,19 +9,19 @@ namespace API.Controllers
     [ApiController]
     public class ItemsController : ControllerBase
     {
-        private readonly IItemRepository _repository;
+        private readonly IItemService _service;
         private readonly IMapper _mapper;
 
-        public ItemsController(IItemRepository repository, IMapper mapper)
+        public ItemsController(IItemService service, IMapper mapper)
         {
-            _repository = repository;
+            _service = service;
             _mapper = mapper;
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ItemDto>>> GetItems()
         {
-            var items = await _repository.GetAllItemsAsync();
+            var items = await _service.GetAllItemsAsync();
             return Ok(_mapper.Map<IEnumerable<ItemDto>>(items));
         }
     }

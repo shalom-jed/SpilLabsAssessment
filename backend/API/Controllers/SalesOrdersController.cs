@@ -10,52 +10,56 @@ namespace API.Controllers
     [ApiController]
     public class SalesOrdersController : ControllerBase
     {
-        private readonly ISalesOrderRepository _repository;
+        private readonly ISalesOrderService _service;
         private readonly IMapper _mapper;
 
-        public SalesOrdersController(ISalesOrderRepository repository, IMapper mapper)
+        public SalesOrdersController(ISalesOrderService service, IMapper mapper)
         {
-            _repository = repository;
+            _service = service;
             _mapper = mapper;
         }
 
+        // GET: api/salesorders
         [HttpGet]
         public async Task<ActionResult<IEnumerable<SalesOrderDto>>> GetOrders()
         {
-            var orders = await _repository.GetAllOrdersAsync();
+            var orders = await _service.GetAllOrdersAsync();
             return Ok(_mapper.Map<IEnumerable<SalesOrderDto>>(orders));
         }
 
+        // GET: api/salesorders/5
         [HttpGet("{id}")]
         public async Task<ActionResult<SalesOrderDto>> GetOrder(int id)
         {
-            var order = await _repository.GetOrderByIdAsync(id);
+            var order = await _service.GetOrderByIdAsync(id);
             if (order == null) return NotFound();
             return Ok(_mapper.Map<SalesOrderDto>(order));
         }
 
+        // POST: api/salesorders
         [HttpPost]
         public async Task<ActionResult<SalesOrderDto>> CreateOrder(SalesOrderDto orderDto)
         {
             var order = _mapper.Map<SalesOrder>(orderDto);
-            var createdOrder = await _repository.CreateOrderAsync(order);
-            
+            var created = await _service.CreateOrderAsync(order);
+
             return CreatedAtAction(
-                nameof(GetOrder), 
-                new { id = createdOrder.SalesOrderId }, 
-                _mapper.Map<SalesOrderDto>(createdOrder)
+                nameof(GetOrder),
+                new { id = created.SalesOrderId },
+                _mapper.Map<SalesOrderDto>(created)
             );
         }
 
+        // PUT: api/salesorders/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateOrder(int id, SalesOrderDto orderDto)
+        public async Task<ActionResult<SalesOrderDto>> UpdateOrder(int id, SalesOrderDto orderDto)
         {
-            if (id != orderDto.SalesOrderId) return BadRequest();
-            
+            if (id != orderDto.SalesOrderId) return BadRequest("ID mismatch.");
+
             var order = _mapper.Map<SalesOrder>(orderDto);
-            await _repository.UpdateOrderAsync(order);
-            
-            return NoContent();
+            var updated = await _service.UpdateOrderAsync(order);
+
+            return Ok(_mapper.Map<SalesOrderDto>(updated));
         }
     }
 }

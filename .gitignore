@@ -1,4 +1,47 @@
+# ─── Node / Frontend ──────────────────────────────────────────────────────────
 node_modules/
+dist/
+.pnp
+.pnp.js
+
+# ─── .NET / Backend Build Outputs ─────────────────────────────────────────────
 bin/
 obj/
+*.user
+*.suo
+.vs/
+.vscode/
+
+# ─── .NET Sensitive Config ────────────────────────────────────────────────────
+# appsettings.json contains the real connection string — gitignore it.
+# Use appsettings.json.example as the committed template.
+backend/API/appsettings.json
+backend/API/appsettings.Development.json
+backend/API/appsettings.*.json
+
+# .NET User Secrets (never commit these)
+# Located at %APPDATA%\Microsoft\UserSecrets\ — not in project, but just in case
+secrets.json
+
+# ─── Environment Variables ────────────────────────────────────────────────────
 .env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.production
+*.env
+
+# ─── Logs ─────────────────────────────────────────────────────────────────────
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ─── OS / Editor ──────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*.tmp

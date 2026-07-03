@@ -9,19 +9,19 @@ namespace API.Controllers
     [ApiController]
     public class ClientsController : ControllerBase
     {
-        private readonly IClientRepository _repository;
+        private readonly IClientService _service;
         private readonly IMapper _mapper;
 
-        public ClientsController(IClientRepository repository, IMapper mapper)
+        public ClientsController(IClientService service, IMapper mapper)
         {
-            _repository = repository;
+            _service = service;
             _mapper = mapper;
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ClientDto>>> GetClients()
         {
-            var clients = await _repository.GetAllClientsAsync();
+            var clients = await _service.GetAllClientsAsync();
             return Ok(_mapper.Map<IEnumerable<ClientDto>>(clients));
         }
     }
