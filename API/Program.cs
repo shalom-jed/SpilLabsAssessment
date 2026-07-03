@@ -2,6 +2,7 @@ using API.Application.Interfaces;
 using API.Infrastructure.Data;
 using API.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
+using AutoMapper;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,9 +33,12 @@ builder.Services.AddScoped<IClientRepository, ClientRepository>();
 builder.Services.AddScoped<IItemRepository, ItemRepository>();
 builder.Services.AddScoped<ISalesOrderRepository, SalesOrderRepository>();
 
+// 5. Register AutoMapper
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
 var app = builder.Build();
 
-// 5. Configure the HTTP request pipeline.
+// 6. Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -43,7 +47,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// 6. Enable the CORS policy configured above (Must be placed before Authorization)
+// 7. Enable the CORS policy configured above (Must be placed before Authorization)
 app.UseCors("AllowReactApp");
 
 app.UseAuthorization();
