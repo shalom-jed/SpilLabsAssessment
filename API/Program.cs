@@ -1,6 +1,7 @@
 using API.Application.Interfaces;
 using API.Infrastructure.Data;
 using API.Infrastructure.Repositories;
+using API.Application.Mappings;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 
@@ -33,8 +34,8 @@ builder.Services.AddScoped<IClientRepository, ClientRepository>();
 builder.Services.AddScoped<IItemRepository, ItemRepository>();
 builder.Services.AddScoped<ISalesOrderRepository, SalesOrderRepository>();
 
-// 5. Register AutoMapper
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+// 5. Register AutoMapper securely using the explicit configuration action
+builder.Services.AddAutoMapper(cfg => cfg.AddProfile<MappingProfile>());
 
 var app = builder.Build();
 
