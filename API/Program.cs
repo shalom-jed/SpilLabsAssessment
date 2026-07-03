@@ -1,4 +1,6 @@
+using API.Application.Interfaces;
 using API.Infrastructure.Data;
+using API.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,9 +27,14 @@ builder.Services.AddCors(options =>
 builder.Services.AddDbContext<SpilDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// 4. Register Dependency Injection for Repositories (Clean Architecture)
+builder.Services.AddScoped<IClientRepository, ClientRepository>();
+builder.Services.AddScoped<IItemRepository, ItemRepository>();
+builder.Services.AddScoped<ISalesOrderRepository, SalesOrderRepository>();
+
 var app = builder.Build();
 
-// 4. Configure the HTTP request pipeline.
+// 5. Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -36,7 +43,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// 5. Enable the CORS policy configured above (Must be placed before Authorization)
+// 6. Enable the CORS policy configured above (Must be placed before Authorization)
 app.UseCors("AllowReactApp");
 
 app.UseAuthorization();
